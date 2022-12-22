@@ -1,0 +1,382 @@
+<nav class="menubar navbar navbar-default">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#sandhar-menu">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span> 
+			</button>
+				
+			<a class="navbar-brand" href="">SandHar</a>
+		</div>
+				
+		<div class="collapse navbar-collapse" id="sandhar-menu">
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/#/logout">Wyloguj</a></li>						
+			</ul>
+		</div>
+	</div>
+</nav>
+
+<section class="container-fluid container-fluid-max-width">
+	<div class="row">	
+		<div class="col-md-2">
+			<ul class="list-group">
+				<a class="list-group-item" ui-sref="admin_users">Użytkownicy</a>
+				<a class="list-group-item" ui-sref="admin_products">Produkty</a>
+				<a class="list-group-item" ui-sref="admin_users_products">Produkty użytkownika</a>
+				<a class="list-group-item" ui-sref="admin_statistics">Statystyki</a>
+				<a class="list-group-item" ui-sref="admin_user_statistics">Statystyki użytkownika</a>
+				<a class="list-group-item" ui_sref="admin_current_statistics">Bieżące statystyki</a>
+				<a class="list-group-item" ui-sref="admin_current_user_statistics">Bieżące statystyki użytkownika</a>
+			</ul>
+		</div>
+			
+		<div class="col-md-10">
+			
+			<div class="alert alert-success" ng-show="server_messages">
+				<p ng-repeat="server_message in server_messages">
+					{{server_message}}
+				</p>
+			</div>
+			
+			<div class="alert alert-danger" ng-show="server_messages_error">
+				<p ng-repeat="server_message_error in server_messages_error">
+					{{server_message_error}}
+				</p>
+			</div>
+            <div class="table-responsive text-center">					
+				<table class="table table-bordered table-condensed">
+					<thead>
+						<tr>
+							<th>Imię</th>
+							<th>Nazwisko</th>
+							<th>Adres email</th>
+							<th>Login</th>								
+							<th>Stan konta</th>
+							<th>Dostęp do panelu</th>
+							<th>Akcje</th>
+						</tr>
+					</thead>
+							
+					<tbody>												
+						<tr ng-repeat="user in users">
+							<td>{{ user.first_name }}</td>
+							<td>{{ user.last_name }}</td>
+							<td>{{ user.email }}</td>
+							<td>{{ user.username }}</td>
+							<td>{{ user.active }}</td>
+							<td>{{ user.staff }}</td>
+								
+								
+							<td>
+								<a ng-click="ShowUserDialog(user.username)" class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a>
+								<a ng-click="ShowDeleteUserDialog(user.username)" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+								<a ng-click="ShowEditUserDialog(user.username)" class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span></a>
+							</td>
+						</tr>							
+						
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+								
+							<td>
+								<a ng-click="ShowCreateUserDialog()" class="btn btn-success btn-md"><span class="glyphicon glyphicon-plus"></span></a>
+								<a ng-click="SaveUsers()" class="btn btn-warning btn-md"><span class="glyphicon glyphicon-save"></span></a>									
+								<a ng-click="SearchUsers()" class="btn btn-primary btn-md"><span class="glyphicon glyphicon-search"></span></a>									
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+			<nav aria-label="Page navigation" class="text-center">
+				<ul class="pagination">
+					<li>
+						<a ng-click="PreviousPage()" aria-label="Previous">
+							<span aria-hidden="true">&laquo; Poprzedni</span>
+						</a>
+					</li>
+					
+					<li>
+						<a ng-click="NextPage()" aria-label="Next">
+							<span aria-hidden="true">Następny &raquo;</span>
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</section>
+	
+
+<div id="search_user" class="modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<section class="search-box container-fluid">
+					<form class="well">			
+						<div class="form-group">
+							<select class="form-control" ng-model='search_field'>								
+								<option value='first_name'>Szukaj po polu: Imię</option>
+								<option value='last_name'>Szukaj po polu: Nazwisko</option>
+								<option value='email'>Szukaj po polu: Adres email</option>							
+								<option value='username'>Szukaj po polu: Login użytkownika</option>	
+								<option value='active'>Szukaj po polu: Stan konta</option>	
+								<option value='staff'>Szukaj po polu: Dostęp do panelu</option>	
+							</select>
+						</div>
+					
+						<div class="input-group">										
+							<input type="search" class="form-control" data-ng-model="search" data-ng-keyup="searchUserEngine($event)" title="" placeholder="">			
+							<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+						<div>
+					</form>
+				</section>
+			</div>	
+		</div>               
+	</div>
+</div>
+
+
+	
+<div id="show_user" class="modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<form novalidate="novalidate">					
+					<div class="form-group">
+						<label for="first_name">Imię</label>
+						<input type="text" class="form-control" ng-model="user.first_name" ng-disabled="true">					
+					</div>
+				
+					<div class="form-group">
+						<label for="last_name">Nazwisko</label>
+						<input type="text" class="form-control" ng-model="user.last_name" ng-disabled="true">
+					</div>
+				
+					<div class="form-group">
+						<label for="email">Adres email</label>
+						<input type="email" class="form-control" ng-model="user.email" ng-disabled="true">					
+					</div>
+					
+					<div class="form-group">
+						<label for="username">Login użytkownika</label>
+						<input type="text" class="form-control" ng-model="user.username" ng-disabled="true">
+					</div>
+					
+					<div class="form-group">
+						<label for="active">Stan konta</label>						
+                        <select name="active" class="form-control" ng-disabled='true' ng-model="user.active">
+                            <option value="1">Aktywne</option>
+                            <option value="0">Nie aktywne</option>
+                        </select>
+                    </div>
+				
+					<div class="form-group">
+						<label for="staff">Dostęp do panelu</label>						
+                        <select name="staff" class="form-control" ng-disabled='true' ng-model="user.staff">
+                            <option value="1">Tak</option>
+                            <option value="0">Nie</option>
+                        </select>
+                    </div>
+				
+					<div class="form-group text-right">
+						<button type="button" class="btn btn-primary" ng-click="CloseShowUserDialog()">Zamknij podgląd</button>
+					</div>
+				</form>
+			</div>	
+		</div>               
+	</div>
+</div>
+
+<div id="delete_user" class="modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<form ng-submit="DeleteUserAccount(user.username)" novalidate="novalidate">									
+					<div class="form-group">
+						<label for="first_name">Imię</label>
+						<input type="text" class="form-control" ng-model="user.first_name" ng-disabled="true">					
+					</div>
+				
+					<div class="form-group">
+						<label for="last_name">Nazwisko</label>
+						<input type="text" class="form-control" ng-model="user.last_name" ng-disabled="true">
+					</div>
+				
+					<div class="form-group">
+						<label for="email">Adres email</label>
+						<input type="email" class="form-control" ng-model="user.email" ng-disabled="true">					
+					</div>
+					
+					<div class="form-group">
+						<label for="username">Login użytkownika</label>
+						<input type="text" class="form-control" ng-model="user.username" ng-disabled="true">
+					</div>
+					
+					<div class="form-group">
+						<label for="active">Stan konta</label>						
+                        <select name="active" class="form-control" ng-disabled='true' ng-model="user.active">
+                            <option value="1">Aktywne</option>
+                            <option value="0">Nie aktywne</option>
+                        </select>
+                    </div>
+				
+					<div class="form-group">
+						<label for="staff">Dostęp do panelu</label>						
+                        <select name="staff" class="form-control" ng-disabled='true' ng-model="user.staff">
+                            <option value="1">Tak</option>
+                            <option value="0">Nie</option>
+                        </select>
+                    </div>
+					
+					
+					<div class="form-group text-right">
+						<button type="button" class="btn btn-primary" ng-click="CloseDeleteUserDialog()">Zamknij podgląd</button>
+						<button type="submit" class="btn btn-danger">Usuń konto</button>
+					</div>
+				</form>
+			</div>	
+		</div>               
+	</div>
+</div>
+
+<div id="edit_user" class="modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="alert alert-danger" ng-show="server_validation_error_messages">
+					<p ng-repeat="server_validation_error_message in server_validation_error_messages">
+						{{server_validation_error_message}}
+					</p>
+				</div>
+			
+				<form ng-submit="EditUserAccount(user.username)" novalidate="novalidate">										
+					<div class="form-group">
+						<label for="first_name">Imię</label>
+						<input type="text" class="form-control" ng-model="data.first_name">					
+					</div>
+				
+					<div class="form-group">
+						<label for="last_name">Nazwisko</label>
+						<input type="text" class="form-control" ng-model="data.last_name">
+					</div>
+				
+					<div class="form-group">
+						<label for="email">Adres email</label>
+						<input type="email" class="form-control" ng-model="data.email">					
+					</div>
+					
+					<div class="form-group">
+						<label for="username">Login użytkownika</label>
+						<input type="text" class="form-control" ng-model="data.username" ng-disabled="true">
+					</div>
+					
+					<div class="form-group">
+						<label for="password">Hasło</label>
+						<input type="password" class="form-control" ng-model="data.password">
+					</div>
+					
+					<div class="form-group">
+						<label for="password">Powtórz hasło</label>
+						<input type="password" class="form-control" ng-model="data.password_confirmation">
+					</div>
+					
+					<div class="form-group">
+						<label for="active">Stan konta</label>						
+                        <select name="active" class="form-control" ng-model="data.active">
+                            <option value="1">Aktywne</option>
+                            <option value="0">Nie aktywne</option>
+                        </select>
+                    </div>
+				
+					<div class="form-group">
+						<label for="staff">Dostęp do panelu</label>						
+                        <select name="staff" class="form-control" ng-model="data.staff">
+                            <option value=1>Tak</option>
+                            <option value=0>Nie</option>
+                        </select>
+                    </div>
+					
+					
+					<div class="form-group text-right">
+						<button type="button" class="btn btn-primary" ng-click="CloseEditUserDialog()">Zamknij podgląd</button>
+						<button type="submit" class="btn btn-success">Edytuj konto</button>
+					</div>
+				</form>
+			</div>	
+		</div>               
+	</div>
+</div>
+
+<div id="create_user" class="modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="alert alert-danger" ng-show="server_validation_error_messages">
+					<p ng-repeat="server_validation_error_message in server_validation_error_messages">
+						{{server_validation_error_message}}
+					</p>
+				</div>
+			
+				<form ng-submit="CreateUserAccount()" novalidate="novalidate">
+					<div class="form-group">
+						<label for="first_name">Imię</label>
+						<input type="text" class="form-control" ng-model="data.first_name">					
+					</div>
+				
+					<div class="form-group">
+						<label for="last_name">Nazwisko</label>
+						<input type="text" class="form-control" ng-model="data.last_name">
+					</div>
+				
+					<div class="form-group">
+						<label for="email">Adres email</label>
+						<input type="email" class="form-control" ng-model="data.email">					
+					</div>
+					
+					<div class="form-group">
+						<label for="username">Login użytkownika</label>
+						<input type="text" class="form-control" ng-model="data.username">
+					</div>
+					
+					<div class="form-group">
+						<label for="password">Hasło</label>
+						<input type="password" class="form-control" ng-model="data.password">
+					</div>
+					
+					<div class="form-group">
+						<label for="password">Powtórz hasło</label>
+						<input type="password" class="form-control" ng-model="data.password_confirmation">
+					</div>
+					
+					<div class="form-group">
+						<label for="active">Stan konta</label>						
+                        <select name="active" class="form-control" ng-model="data.active">
+                            <option value="1">Aktywne</option>
+                            <option value="0">Nie aktywne</option>
+                        </select>
+                    </div>
+				
+					<div class="form-group">
+						<label for="staff">Dostęp do panelu</label>						
+                        <select name="staff" class="form-control" ng-model="data.staff">
+                            <option value="1">Tak</option>
+                            <option value="0">Nie</option>
+                        </select>
+                    </div>
+										
+					<div class="form-group text-right">
+						<button type="button" class="btn btn-primary" ng-click="CloseCreateUserDialog()">Zamknij podgląd</button>
+						<button type="submit" class="btn btn-success">Utwórz konto</button>
+					</div>
+				</form>
+			</div>	
+		</div>               
+	</div>
+</div>

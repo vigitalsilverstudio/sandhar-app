@@ -1,0 +1,412 @@
+<main ng-data-controller="UsersWorkspaceController">
+	<nav class="menubar navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#sandhar-menu">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span> 
+				</button>
+				
+				<a class="navbar-brand" href="">{{ login_username }}</a>
+			</div>
+				
+			<div class="collapse navbar-collapse" id="sandhar-menu">
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="/#/logout">Wyloguj</a></li>						
+				</ul>
+			</div>
+		</div>
+	</nav>
+	
+	<section class="search-box container">
+		<form class="well">
+			<div class="input-group">				
+				<input type="search" class="form-control" data-ng-model="product_id" data-ng-keyup="searchProduct($event)" title="Podaj numer ID produktu" placeholder="Podaj numer ID produktu">			
+				<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+			<div>
+		</form>
+	</section>
+		
+	<section class="search-box-result container" data-ng-show="product_result">
+		<form>
+			<div class="well">
+				<div class="form-group">
+					<label for="product_name">Nazwa produktu</label>
+					<input type="text" class="form-control" data-ng-value="product_result.product_name" data-ng-readonly="true" data-ng-disabled="true">
+				</div>
+			
+				<div class="form-group">
+					<label for="product_id">ID produktu</label>
+					<input type="text" class="form-control" data-ng-value="product_result.product_id" data-ng-readonly="true" data-ng-disabled="true">
+				</div>
+			
+				<div class="form-group">
+					<label for="company_name">Nazwa firmy</label>
+					<input type="text" class="form-control" data-ng-value="product_result.company_name" data-ng-readonly="true" data-ng-disabled="true">
+				</div>
+			
+				<div class="form-group">
+					<label for="login">Login użytkownika</label>
+					<input class="form-control" data-ng-value="product_result.username" data-ng-readonly="true" data-ng-disabled="true">
+				</div>
+				
+				<div class="form-group">
+					<label for="attentions">Uwagi do produktu</label>					
+					<textarea class="form-control" data-ng-blur="updateUserProductAttentions()" data-ng-bind="product_result.attentions" data-ng-model="attentions"></textarea>
+				</div>
+			</div>
+			
+			<div class="well">
+				<div class="form-group">
+					<label for="number_of_good_products">Liczba dobrych sztuk</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.number_of_good_products}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.number_of_good_products">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label for="number_of_bad_products">Liczba braków</label>						
+					<input type="number" class="form-control" data-ng-blur="updateUserProduct()" data-ng-keyup="updateUserProduct($event.keyCode)" ng-value="product_result.number_of_bad_products" data-ng-model="data.number_of_bad_products" data-ng-readonly="true" data-ng-disabled="true">
+				</div>
+				
+				<div class="form-group">
+					<label for="number_of_sawn_products">Liczba piłowanych produktów</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.number_of_sawn_products}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProduct()" data-ng-keyup="updateUserProduct($event.keyCode)" data-ng-model="data.number_of_sawn_products">
+					</div>
+				</div>
+			</div>
+			
+			<div class="well">
+				<div class="form-group">
+					<label for="sum_of_products">Suma produktów</label>
+					<input type="number" class="form-control" data-ng-blur="updateUserProduct($event)" data-ng-model="product_result.sum_of_products" data-ng-value="product_result.sum_of_products" data-ng-readonly="true">
+				</div>
+				
+				<div class="form-group">
+					<label for="arithmetic_mean">Średnia liczba produktów</label>
+					<input type="number" class="form-control" data-ng-blur="updateUserProduct($event)" data-ng-model="product_result.arithmetic_mean" data-ng-value="product_result.arithmetic_mean" data-ng-readonly="true">
+				</div>
+				
+				<div class="form-group">
+					<label for="number_of_box">Liczba pudełek</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.number_of_box}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProduct()" data-ng-keyup="updateUserProduct($event.keyCode)" data-ng-model="data.number_of_box">
+					</div>
+				</div>
+			</div>
+			
+			<div class="well" data-ng-show="product_result.company_name == 'autoliv'">
+				<div class="form-group">
+					<label>Ostra krawędź</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.autoliv_defect_1}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.autoliv_defect_1">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Deformacja korpusu szpuli</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.autoliv_defect_2}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.autoliv_defect_2">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Ubytek materiału na korpusie szpuli</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.autoliv_defect_3}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.autoliv_defect_3">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Złamany ząb</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.autoliv_defect_4}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.autoliv_defect_4">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Zły wymiar</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.autoliv_defect_5}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.autoliv_defect_5">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Pęknięcie na korpusie szpuli</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.autoliv_defect_6}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.autoliv_defect_6">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Korozja (biały nalot)</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.autoliv_defect_7}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.autoliv_defect_7">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Deformacja pinu</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.autoliv_defect_8}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.autoliv_defect_8">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Brak pinu</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.autoliv_defect_9}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.autoliv_defect_9">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Pory</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.autoliv_defect_10}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.autoliv_defect_10">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Brud na formie (olej, smar)</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.autoliv_defect_11}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.autoliv_defect_11">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Inna referencja</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.autoliv_defect_12}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.autoliv_defect_12">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Inne</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.autoliv_defect_13}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.autoliv_defect_13">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Pęknięcie/Ubytki materiału na pinie</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.autoliv_defect_14}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.autoliv_defect_14">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Protokół czerwonej szkrzynki</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.autoliv_defect_15}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.autoliv_defect_15">
+					</div>
+				</div>
+			</div>
+			
+			<div class="well" data-ng-show="product_result.company_name == 'trw'">
+				<div class="form-group">
+					<label>Odkształcony kołnierz</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_1}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_1">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Ostra krawędź</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_2}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_2">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Deformacja korpusu szpuli</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_3}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_3">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Ubytek materiału na korpusie szpuli</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_4}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_4">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Ubytek materiału na kołnierzu</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_5}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_5">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Brak zębów wokół pinu</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_6}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_6">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Zły wymiar</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_7}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_7">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Pęknięcie na korpusie szpuli</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_8}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_8">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Korozja (biały nalot)</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_9}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_9">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Deformacja pinu</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_10}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_10">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Brak pinu</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_11}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_11">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Pory</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_12}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_12">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Brud na formie (olej, smar)</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_13}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_13">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Inna referencja</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_14}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_14">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Inne</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_15}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_15">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Uderzenie na kołnierzu</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_16}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_16">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Nadlewy na kołnierzu</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_17}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_17">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Deformacja elipsy</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_18}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_18">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Ubytek materiału na elipsie</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_19}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_19">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Deformacja zaczepu</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_20}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_20">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Ubytek materiału na zaczepie</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_21}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_21">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Pęknięcia/Ubytki materiału na pinie</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_22}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_22">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>Protokół czerwonej szkrzynki</label>
+					<div class="input-group">
+						<span class="input-group-addon">{{product_result.trw_defect_23}}</span>
+						<input type="number" class="form-control" data-ng-blur="updateUserProductDefect()" data-ng-keyup="updateUserProductDefect($event.keyCode)" data-ng-model="data.trw_defect_23">
+					</div>
+				</div>
+			</div>
+		</form>
+	</section>
+</main>

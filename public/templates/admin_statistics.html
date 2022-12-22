@@ -1,0 +1,362 @@
+<nav class="menubar navbar navbar-default">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#sandhar-menu">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span> 
+			</button>
+				
+			<a class="navbar-brand" href="">SandHar</a>
+		</div>
+				
+		<div class="collapse navbar-collapse" id="sandhar-menu">
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/#/logout">Wyloguj</a></li>						
+			</ul>
+		</div>
+	</div>
+</nav>
+
+<section class="container-fluid container-fluid-max-width">
+	<div class="row">				
+			
+		<div class="col-md-2">
+			<ul class="list-group">
+				<a class="list-group-item" ui-sref="admin_users">Użytkownicy</a>
+				<a class="list-group-item" ui-sref="admin_products">Produkty</a>
+				<a class="list-group-item" ui-sref="admin_users_products">Produkty użytkownika</a>
+				<a class="list-group-item" ui-sref="admin_statistics">Statystyki</a>
+				<a class="list-group-item" ui-sref="admin_user_statistics">Statystyki użytkownika</a>
+				<a class="list-group-item" ui_sref="admin_current_statistics">Bieżące statystyki</a>
+				<a class="list-group-item" ui-sref="admin_current_user_statistics">Bieżące statystyki użytkownika</a>
+			</ul>
+		</div>
+			
+		<div class="col-md-10">
+			<div class="table-responsive text-center">					
+				<table class="table table-bordered table-condensed">
+					<thead>
+						<tr>
+							<th>Nazwa produktu</th>
+							<th>ID produktu</th>
+							<th>Nazwa firmy</th>
+							<th>Norma godzinowa</th>
+							<th>Data archiwizacji</th>
+							<th>Akcje</th>
+						</tr>
+					</thead>
+							
+					<tbody>												
+						<tr ng-repeat="statistic in statistics">
+							<td>{{ statistic.product_name }}</td>
+							<td>{{ statistic.product_id }}</td>
+							<td>{{ statistic.company_name }}</td>
+							<td>{{ statistic.min_production_level }}</td>
+							<td>{{ statistic.created_at }}</td>							
+																
+							<td>
+								<a ng-click="ShowStatisticDialog(statistic.product_id, statistic.id)" class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a>
+							</td>
+						</tr>							
+						
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>					
+							<td></td>		
+								
+							<td>
+								<a ng-click="SaveStatistics()" class="btn btn-warning btn-md"><span class="glyphicon glyphicon-save"></span></a>
+								<a ng-click="SearchStatistics()" class="btn btn-primary btn-md"><span class="glyphicon glyphicon-search"></span></a>							
+							</td>
+						</tr>
+					</tbody>
+				</table>											
+			</div>
+			
+			<nav aria-label="Page navigation" class="text-center">
+				<ul class="pagination">
+					<li>
+						<a ng-click="PreviousPage()" aria-label="Previous">
+							<span aria-hidden="true">&laquo; Poprzedni</span>
+						</a>
+					</li>
+					
+					<li>
+						<a ng-click="NextPage()" aria-label="Next">
+							<span aria-hidden="true">Następny &raquo;</span>
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</section>
+
+<div id="search_statistic" class="modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<section class="search-box container-fluid">
+					<form class="well">			
+						<div class="form-group">
+							<select class="form-control" ng-model='search_field'>								
+								<option value='product_id'>Szukaj po polu: ID produktu</option>
+								<option value='product_name'>Szukaj po polu: Nazwa produktu</option>
+								<option value='company_name'>Szukaj po polu: Nazwa firmy</option>							
+								<option value='min_production_level'>Szukaj po polu: Norma godzinowa</option>	
+													
+							</select>
+						</div>
+					
+						<div class="input-group">										
+							<input type="search" class="form-control" data-ng-model="search" data-ng-keyup="searchStatisticEngine($event)" title="" placeholder="">			
+							<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+						<div>
+					</form>
+				</section>
+			</div>	
+		</div>               
+	</div>
+</div>
+
+<div id="show_statistic" class="modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<form novalidate="novalidate">					
+					<div class="form-group">
+						<label for="product_name">Nazwa produktu</label>
+						<input type="text" class="form-control" ng-value="statistic.product_name" ng-readonly="true">					
+					</div>
+					
+					<div class="form-group">
+						<label for="product_id">ID produktu</label>
+						<input type="text" class="form-control" ng-value="statistic.product_id" ng-readonly="true">					
+					</div>
+					
+					<div class="form-group">
+						<label for="company_name">Nazwa firmy</label>
+						<input type="text" class="form-control" ng-value="statistic.company_name" ng-readonly="true">					
+					</div>
+					
+					<div class="form-group">
+						<label for="product_name">Norma godzinowa</label>
+						<input type="text" class="form-control" ng-value="statistic.min_production_level" ng-readonly="true">					
+					</div>
+					
+					<div class="form-group">
+						<label for="product_name">Data archiwizacji</label>
+						<input type="text" class="form-control" ng-value="statistic.created_at" ng-readonly="true">					
+					</div>
+					
+					<div class="form-group">
+						<label for="attentions">Uwagi do produktu</label>
+						<textarea class="form-control" ng-readonly="true">{{statistic.attentions}}</textarea>
+					</div>
+					
+					<div data-ng-show="statistic.company_name == 'autoliv'">
+						<div class="form-group">
+							<label for="autoliv_defect_1">Ostra krawędź</label>
+							<input type="number" class="form-control" ng-value="statistic.autoliv_defect_1" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="autoliv_defect_2">Deformacja korpusu szpuli</label>
+							<input type="number" class="form-control" ng-value="statistic.autoliv_defect_2" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="autoliv_defect_3">Ubytek materiału na korpusie szpuli</label>
+							<input type="number" class="form-control" ng-value="statistic.autoliv_defect_3" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="autoliv_defect_4">Złamany ząb</label>
+							<input type="number" class="form-control" ng-value="statistic.autoliv_defect_4" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="autoliv_defect_5">Zły wymiar</label>
+							<input type="number" class="form-control" ng-value="statistic.autoliv_defect_5" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="autoliv_defect_6">Pęknięcia na korpusie szpuli</label>
+							<input type="number" class="form-control" ng-value="statistic.autoliv_defect_6" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="autoliv_defect_7">Korozja (biały nalot)</label>
+							<input type="number" class="form-control" ng-value="statistic.autoliv_defect_7" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="autoliv_defect_8">Deformacja pinu</label>
+							<input type="number" class="form-control" ng-value="statistic.autoliv_defect_8" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="autoliv_defect_9">Brak pinu</label>
+							<input type="number" class="form-control" ng-value="statistic.autoliv_defect_9" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="autoliv_defect_10">Pory</label>
+							<input type="number" class="form-control" ng-value="statistic.autoliv_defect_10" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="autoliv_defect_11">Brud na formie (olej, smar)</label>
+							<input type="number" class="form-control" ng-value="statistic.autoliv_defect_11" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="autoliv_defect_12">Inna referencja</label>
+							<input type="number" class="form-control" ng-value="statistic.autoliv_defect_12" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="autoliv_defect_13">Inne</label>
+							<input type="number" class="form-control" ng-value="statistic.autoliv_defect_13" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="autoliv_defect_14">Pęknięcia/ubytki materiału na pinie</label>
+							<input type="number" class="form-control" ng-value="statistic.autoliv_defect_14" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="autoliv_defect_15">Protokół czerwonej skrzynki</label>
+							<input type="number" class="form-control" ng-value="statistic.autoliv_defect_15" ng-readonly="true">					
+						</div>
+					</div>
+					
+                    <div data-ng-show="statistic.company_name == 'trw'">
+						<div class="form-group">
+							<label for="trw_defect_1">Odkształcony kołnierz</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_1" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="trw_defect_2">Ostra krawędź</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_2" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="trw_defect_3">Deformacja korpusu szpuli</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_3" ng-readonly="true">					
+						</div>
+						
+						 <div class="form-group">
+							<label for="trw_defect_4">Ubytek materiału na korpusie</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_4" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="trw_defect_5">Ubytek materiału na kołnierzu</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_5" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="trw_defect_6">Brak zębów wokół pinu</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_6" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="trw_defect_7">Zły wymiar</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_7" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="trw_defect_8">Pęknięcia na korpusie szpuli</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_8" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="trw_defect_9">Korozja (biały nalot)</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_9" ng-readonly="true">					
+						</div>
+                    
+						<div class="form-group">
+							<label for="trw_defect_10">Deformacja pinu</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_10" ng-readonly="true">					
+						</div>
+                    
+						<div class="form-group">
+							<label for="trw_defect_11">Brak pinu</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_11" ng-readonly="true">					
+						</div>
+                    
+						<div class="form-group">
+							<label for="trw_defect_12">Pory</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_12" ng-readonly="true">					
+						</div>
+                    
+						<div class="form-group">
+							<label for="trw_defect_13">Brud na formie (olej, smar)</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_13" ng-readonly="true">					
+						</div>
+                    
+						<div class="form-group">
+							<label for="trw_defect_14">Inna referencja</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_14" ng-readonly="true">					
+						</div>
+                    
+						<div class="form-group">
+							<label for="trw_defect_15">Inne</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_15" ng-readonly="true">					
+						</div>
+                    
+						<div class="form-group">
+							<label for="trw_defect_16">Uderzenia na kołnierzu</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_16" ng-readonly="true">					
+						</div>
+                    
+						<div class="form-group">
+							<label for="trw_defect_17">Nadlewy na kołnierzu</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_17" ng-readonly="true">					
+						</div>
+						
+						<div class="form-group">
+							<label for="trw_defect_18">Deformacja elipsy</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_18" ng-readonly="true">					
+						</div>
+                    
+						<div class="form-group">
+							<label for="trw_defect_19">Ubytek materiału na elipsie</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_19" ng-readonly="true">					
+						</div>
+                    
+						<div class="form-group">
+							<label for="trw_defect_20">Deformacja zaczepu</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_20" ng-readonly="true">					
+						</div>
+                    
+						<div class="form-group">
+							<label for="trw_defect_21">Ubytek materiału na zaczepie</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_21" ng-readonly="true">					
+						</div>
+                    
+						<div class="form-group">
+							<label for="trw_defect_22">Pęknięcia/ubytki materiału na pinie</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_22" ng-readonly="true">					
+						</div>
+                    
+						<div class="form-group">
+							<label for="trw_defect_23">Protokół czerwonej skrzynki</label>
+							<input type="number" class="form-control" ng-value="statistic.trw_defect_23" ng-readonly="true">					
+						</div>
+					
+					</div>					
+					
+					<div class="form-group text-right">
+						<button type="button" class="btn btn-primary" ng-click="CloseShowStatisticDialog()">Zamknij podgląd</button>
+					</div>
+				</form>
+			</div>	
+		</div>               
+	</div>
+</div>

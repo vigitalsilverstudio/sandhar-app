@@ -1,0 +1,30 @@
+<main class="fullscreen login">
+	<form ng-submit="LoginMe()" class="login-ui well">
+		<div class="alert alert-danger" ng-show="server_messages_error">
+			<p ng-repeat="server_message_error in server_messages_error">
+				{{server_message_error}}
+			</p>
+		</div>
+			
+		<div class="input-group">						
+			<input type="text" ng-model="login_data.username" class="form-control" title="Login użytkownika" placeholder="Login użytkownika">
+			<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+		</div>
+					
+		<div class="input-group">							
+			<input type="password" ng-model="login_data.password" class="form-control" title="Hasło użytkownika" placeholder="Hasło użytkownika">
+			<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+		</div>
+		
+		<div class="form-group">							
+			<select ng-model="login_data.staff" class="form-control">
+				<option value="0">Pracownik</option>
+				<option value="1">Administrator</option>
+			</select>
+		</div>
+	
+		<div class="form-group">							
+			<input type="submit" value="Zaloguj mnie" class="btn btn-block btn-primary">
+		</div>
+	</form>
+</main>

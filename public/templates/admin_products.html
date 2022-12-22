@@ -1,0 +1,298 @@
+<nav class="menubar navbar navbar-default">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#sandhar-menu">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span> 
+			</button>
+				
+			<a class="navbar-brand" href="">SandHar</a>
+		</div>
+				
+		<div class="collapse navbar-collapse" id="sandhar-menu">
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/#/logout">Wyloguj</a></li>						
+			</ul>
+		</div>
+	</div>
+</nav>
+
+<section class="container-fluid container-fluid-max-width">
+	<div class="row">
+		<div class="col-md-2">
+			<ul class="list-group">
+				<a class="list-group-item" ui-sref="admin_users">Użytkownicy</a>
+				<a class="list-group-item" ui-sref="admin_products">Produkty</a>
+				<a class="list-group-item" ui-sref="admin_users_products">Produkty użytkownika</a>
+				<a class="list-group-item" ui-sref="admin_statistics">Statystyki</a>
+				<a class="list-group-item" ui-sref="admin_user_statistics">Statystyki użytkownika</a>
+				<a class="list-group-item" ui_sref="admin_current_statistics">Bieżące statystyki</a>
+				<a class="list-group-item" ui-sref="admin_current_user_statistics">Bieżące statystyki użytkownika</a>
+			</ul>
+		</div>
+			
+		<div class="col-md-10">
+			<div class="alert alert-success" ng-show="server_messages">
+				<p ng-repeat="server_message in server_messages">
+					{{server_message}}
+				</p>
+			</div>
+			
+			<div class="alert alert-danger" ng-show="server_messages_error">
+				<p ng-repeat="server_message_error in server_messages_error">
+					{{server_message_error}}
+				</p>
+			</div>
+			
+			<div class="table-responsive text-center">					
+				<table class="table table-bordered table-condensed">
+					<thead>
+						<tr>
+							<th>Nazwa produktu</th>
+							<th>ID produktu</th>
+							<th>Nazwa firmy</th>
+							<th>Norma godzinowa</th>															
+							<th>Akcje</th>
+						</tr>
+					</thead>
+							
+					<tbody>												
+						<tr ng-repeat="product in products">							
+							<td>{{ product.product_name }}</td>
+							<td>{{ product.product_id }}</td>
+							<td>{{ product.company_name }}</td>
+							<td>{{ product.min_production_level }}</td>							
+																
+							<td>
+								<a ng-click="ShowProductDialog(product.product_id)" class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a>
+								<a ng-click="ShowDeleteProductDialog(product.product_id)" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+								<a ng-click="ShowEditProductDialog(product.product_id)" class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span></a>
+							</td>
+						</tr>							
+						
+						<tr>							
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>					
+								
+							<td>
+								<a ng-click="ShowCreateProductDialog()" class="btn btn-success btn-md"><span class="glyphicon glyphicon-plus"></span></a>
+								<a ng-click="SaveProducts()" class="btn btn-warning btn-md"><span class="glyphicon glyphicon-save"></span></a>									
+								<a ng-click="SearchProducts()" class="btn btn-primary btn-md"><span class="glyphicon glyphicon-search"></span></a>
+							</td>
+						</tr>
+					</tbody>
+				</table>											
+			</div>
+		</div>
+		
+		<nav aria-label="Page navigation" class="text-center">
+				<ul class="pagination">
+					<li>
+						<a ng-click="PreviousPage()" aria-label="Previous">
+							<span aria-hidden="true">&laquo; Poprzedni</span>
+						</a>
+					</li>
+					
+					<li>
+						<a ng-click="NextPage()" aria-label="Next">
+							<span aria-hidden="true">Następny &raquo;</span>
+						</a>
+					</li>
+				</ul>
+			</nav>
+	</div>
+</section>
+
+
+<div id="search_product" class="modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<section class="search-box container-fluid">
+					<form class="well">			
+						<div class="form-group">
+							<select class="form-control" ng-model='search_field'>								
+								<option value='product_id'>Szukaj po polu: ID produktu</option>
+								<option value='product_name'>Szukaj po polu: Nazwa produktu</option>
+								<option value='company_name'>Szukaj po polu: Nazwa firmy</option>							
+								<option value='min_production_level'>Szukaj po polu: Norma godzinowa</option>																	
+							</select>
+						</div>
+					
+						<div class="input-group">										
+							<input type="search" class="form-control" data-ng-model="search" data-ng-keyup="searchProductEngine($event)" title="" placeholder="">			
+							<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+						<div>
+					</form>
+				</section>
+			</div>	
+		</div>               
+	</div>
+</div>
+
+<div id="show_product" class="modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<form novalidate="novalidate">					
+					<div class="form-group">
+						<label for="product_name">Nazwa produktu</label>
+						<input type="text" class="form-control" ng-model="product.product_name" ng-disabled="true">					
+					</div>
+					
+					<div class="form-group">
+						<label for="product_id">ID produktu</label>
+						<input type="text" class="form-control" ng-model="product.product_id" ng-disabled="true">					
+					</div>
+					
+					<div class="form-group">
+						<label for="company_name">Nazwa firmy</label>						
+                        <select name="company_name" class="form-control" ng-disabled='true' ng-model="product.company_name">
+                            <option value="autoliv">autoliv</option>
+                            <option value="trw">trw</option>
+                        </select>
+					</div>
+					
+					<div class="form-group">
+						<label for="product_name">Norma godzinowa</label>
+						<input type="number" class="form-control" ng-model="product.min_production_level" ng-disabled="true">					
+					</div>
+					
+					<div class="form-group text-right">
+						<button type="button" class="btn btn-primary" ng-click="CloseShowProductDialog()">Zamknij podgląd</button>
+					</div>
+				</form>
+			</div>	
+		</div>               
+	</div>
+</div>
+
+
+<div id="delete_product" class="modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<form novalidate="novalidate" ng-submit="DeleteProduct(product.product_id)">					
+					<div class="form-group">
+						<label for="product_name">Nazwa produktu</label>
+						<input type="text" class="form-control" ng-model="product.product_name" ng-disabled="true">					
+					</div>
+					
+					<div class="form-group">
+						<label for="product_id">ID produktu</label>
+						<input type="text" class="form-control" ng-model="product.product_id" ng-disabled="true">					
+					</div>
+					
+					<div class="form-group">
+						<label for="company_name">Nazwa firmy</label>						
+                        <select name="company_name" class="form-control" ng-disabled='true' ng-model="product.company_name">
+                            <option value="autoliv">autoliv</option>
+                            <option value="trw">trw</option>
+                        </select>
+					</div>
+					
+					<div class="form-group">
+						<label for="product_name">Norma godzinowa</label>
+						<input type="number" class="form-control" ng-model="product.min_production_level" ng-disabled="true">					
+					</div>
+					
+					<div class="form-group text-right">
+						<button type="button" class="btn btn-primary" ng-click="CloseDeleteProductDialog()">Zamknij podgląd</button>
+						<button type="submit" class="btn btn-danger">Usuń produkt</button>
+					</div>
+				</form>
+			</div>	
+		</div>               
+	</div>
+</div>
+
+<div id="edit_product" class="modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<form novalidate="novalidate" ng-submit="EditProduct(product.product_id)">					
+					<div class="alert alert-danger" ng-show="server_validation_error_messages">
+						<p ng-repeat="server_validation_error_message in server_validation_error_messages">
+							{{server_validation_error_message}}
+						</p>
+					</div>
+					
+					<div class="form-group">
+						<label for="product_name">Nazwa produktu</label>
+						<input type="text" class="form-control" ng-model="data.product_name" ng-model="data.product_name" >					
+					</div>
+					
+					<div class="form-group">
+						<label for="product_id">ID produktu</label>
+						<input type="text" class="form-control" ng-model="data.product_id" ng-disabled="true">					
+					</div>
+					
+					<div class="form-group">
+						<label for="company_name">Nazwa firmy</label>						
+                        <select name="company_name" class="form-control" ng-disabled='true' ng-model="data.company_name">
+                            <option value="autoliv">autoliv</option>
+                            <option value="trw">trw</option>
+                        </select>
+					</div>
+					
+					<div class="form-group">
+						<label for="product_name">Norma godzinowa</label>
+						<input type="number" class="form-control" ng-model="data.min_production_level">					
+					</div>
+					
+					<div class="form-group text-right">
+						<button type="button" class="btn btn-primary" ng-click="CloseEditProductDialog()">Zamknij podgląd</button>
+						<button type="submit" class="btn btn-success">Edytuj produkt</button>
+					</div>
+				</form>
+			</div>	
+		</div>               
+	</div>
+</div>
+
+<div id="create_product" class="modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<form novalidate="novalidate" ng-submit="CreateProduct(product.product_id)">					
+					<div class="alert alert-danger" ng-show="server_validation_error_messages">
+						<p ng-repeat="server_validation_error_message in server_validation_error_messages">
+							{{server_validation_error_message}}
+						</p>
+					</div>
+					
+					<div class="form-group">
+						<label for="product_name">Nazwa produktu</label>
+						<input type="text" class="form-control" ng-model="data.product_name" >					
+					</div>
+					
+					<div class="form-group">
+						<label for="product_id">ID produktu</label>
+						<input type="text" class="form-control" ng-model="data.product_id">					
+					</div>
+					
+					<div class="form-group">
+						<label for="company_name">Nazwa firmy</label>						
+                        <select name="company_name" class="form-control" ng-model="data.company_name">
+                            <option value="autoliv">autoliv</option>
+                            <option value="trw">trw</option>
+                        </select>
+					</div>
+					
+					<div class="form-group">
+						<label for="product_name">Norma godzinowa</label>
+						<input type="number" class="form-control" ng-model="data.min_production_level">					
+					</div>
+					
+					<div class="form-group text-right">
+						<button type="button" class="btn btn-primary" ng-click="CloseCreateProductDialog()">Zamknij podgląd</button>
+						<button type="submit" class="btn btn-success">Utwórz produkt</button>
+					</div>
+				</form>
+			</div>	
+		</div>               
+	</div>
+</div>
